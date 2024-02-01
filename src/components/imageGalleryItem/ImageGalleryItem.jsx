@@ -34,9 +34,12 @@ class ImageGalleryItem extends Component {
     const { largeImageURL, id } = this.props;
 
     return (
-      <li className={styles.ImageGalleryItem} onClick={this.handleImageClick}>
-        <img src={largeImageURL} alt="" id={id}/>
-      </li>
+      <div className={styles.imgContainer}>
+          <li className={styles.ImageGalleryItem} onClick={this.handleImageClick}>
+            <img src={largeImageURL} alt="" id={id}/>
+          </li>
+      </div>
+      
     );
   }
 }
