@@ -1,3 +1,12 @@
+.Header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    background-color: #2cbb7f;
+    margin-bottom: 5px;
+}
+
 .Searchbar {
     top: 0;
     left: 0;
@@ -22,15 +31,17 @@
     align-items: center;
     width: 100%;
     max-width: 600px;
-    background-color: #fff;
+    background-color: #2cbb7f;
     border-radius: 3px;
     overflow: hidden;
   }
   
   .SearchFormButton {
+    margin-right: 5px;
     display: inline-block;
     width: 48px;
     height: 48px;
+    border-radius: 10px;
     border: 0;
     background-image: url('/src/components/common/images/search.svg');
     background-size: 40%;
@@ -44,6 +55,7 @@
   
   .SearchFormButton:hover {
     opacity: 1;
+    fill: #2cbb7f;
   }
   
   .SearchFormButtonLabel {
@@ -65,8 +77,8 @@
     font-size: 20px;
     border: none;
     outline: none;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 4px;
+    border-radius: 10px;
 }
   
   .SearchFormInput::placeholder {

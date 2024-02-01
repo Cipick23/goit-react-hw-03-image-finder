@@ -1,13 +1,53 @@
-import * as basicLightbox from 'basiclightbox'
+import { Component } from 'react';
+// import * as basicLightbox from 'basiclightbox';
+import 'basiclightbox/dist/basicLightbox.min.css';
+import styles from './Modal.module.css';
+import PropTypes from 'prop-types';
 
-const instance = basicLightbox.create(`
-    <div class="modal">
-        <p>
-            Your first lightbox with just a few lines of code.
-            Yes, it's really that simple.
-        </p>
-    </div>
-`)
+class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
 
-instance.show()
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
 
+  
+
+  handleKeyDown = (event) => {
+    if (event.code === 'Escape') {
+      this.props.onClose();
+    }
+  };
+
+  handleBackdropClick = (event) => {
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
+  };
+
+  render() {
+    const { imageUrl, id } = this.props;
+
+    return (
+      <div 
+        className={styles.Overlay} 
+        onClick={this.handleBackdropClick}
+        >
+        <div 
+          className={styles.Modal}
+          >
+          <img src={imageUrl} alt="Large" width={800} height={600} id={id} />
+        </div>
+      </div>
+    );
+  }
+}
+
+
+Modal.propTypes = {
+  imageUrl: PropTypes.string.isRequired,
+};
+
+export default Modal;
