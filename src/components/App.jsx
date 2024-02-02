@@ -11,7 +11,6 @@ axios.defaults.baseURL = 'https://pixabay.com/api/';
 const API_KEY = '40925294-1286bb755e1bdf5717fd8e824';
 
 class App extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -28,23 +27,21 @@ class App extends Component {
   }
 
   async retrieveArticles(query = 'react', page = 1) {
-    console.log(`Retrieving articles for page ${page}`); 
+    console.log(`Retrieving articles for page ${page}`);
+
     this.setState({ isLoading: true, query });
-  
+
     try {
       const response = await axios.get(
         `/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
       );
       console.log('A fost returnată corect următoarea pagină de rezultate');
-  
-      const newArticles =
-        page === 1
-          ? response.data.hits
-          : [...this.state.articles, ...response.data.hits];
-  
+
+      const newArticles = response.data.hits;
+
       // Verifică dacă numărul de imagini returnate de API este mai mic decât numărul pe care îl aștepți
       const showButton = newArticles.length === 12;
-  
+
       this.setState(prevState => ({
         articles: newArticles,
         page,
@@ -58,22 +55,23 @@ class App extends Component {
         this.setState({ isLoading: false });
       }, 1000);
     }
-  }  
+  }
 
   loadMore = () => {
     console.log('Butonul Load more a fost apăsat'); // Adaugă acest rând
-    this.setState(prevState => ({ page: prevState.page + 1 }), () => {
-    this.retrieveArticles(this.state.query, this.state.page);
-    });
+    this.setState(
+      prevState => ({ page: prevState.page + 1 }),
+      () => {
+        this.retrieveArticles(this.state.query, this.state.page);
+      }
+    );
   };
-  
 
   handleButtonClick = () => {
     this.loadMore();
   };
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;

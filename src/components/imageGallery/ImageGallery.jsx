@@ -13,7 +13,7 @@ class ImageGallery extends Component {
     <ul className={styles.ImageGallery}>
       {articles.map(({ id, largeImageURL }, index) => (
         <ImageGalleryItem
-          key={id + '-' + index}
+          key={id}
           id={id}
           largeImageURL={largeImageURL}
         />
