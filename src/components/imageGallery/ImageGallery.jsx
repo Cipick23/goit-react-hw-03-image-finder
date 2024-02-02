@@ -1,61 +1,69 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from 'components/button/Button';
+import styles from './ImageGallery.module.css';
 import Loader from 'components/loader/Loader';
 import ImageGalleryItem from 'components/imageGalleryItem/ImageGalleryItem';
-import styles from './ImageGallery.module.css';
+import Button from 'components/button/Button';
 import articles from 'services/api';
 
-export default class ImageGallery extends Component {
+  class ImageGallery extends Component {
 
   state = {
     images: [],
-    status: 'idle',
+    status: 'No network request is happening.',
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.inputValue !== this.props.inputValue) {
-      this.fetchLoad();
+      this.fetchImages();
     }
     if (prevProps.page !== this.props.page && this.props.page > 1) {
-      this.fetchLoadMore();
+      this.LoadMoreImages();
     }
   }
 
-  fetchLoad = () => {
+  fetchImages = () => {
     const { inputValue, page } = this.props;
-
-    articles(inputValue, page)
-      .then(response => {
-        this.setState({
-          images: response.hits,
-          status: 'resolve',
-        });
-      })
-      .catch(error => this.setState({ status: 'rejected' }));
+  
+    this.setState({ status: 'A network request has been initiated and is in progress...' });
+  
+    setTimeout(() => {
+      articles(inputValue, page)
+        .then(response => {
+          this.setState({
+            images: response.hits,
+            status: 'The network request has completed successfully',
+          });
+        })
+        .catch(error => this.setState({ status: 'The network request has failed.' }));
+    }, 1000);
   };
-
-  fetchLoadMore = () => {
+  
+  LoadMoreImages = () => {
     const { inputValue, page } = this.props;
-
-    articles(inputValue, page)
-      .then(response => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...response.hits],
-          status: 'resolve',
-        }));
-      })
-      .catch(error => this.setState({ status: 'rejected' }));
+  
+    this.setState({ status: 'A network request has been initiated and is in progress...' });
+  
+    setTimeout(() => {
+      articles(inputValue, page)
+        .then(response => {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...response.hits],
+            status: 'The network request has completed successfully',
+          }));
+        })
+        .catch(error => this.setState({ status: 'The network request has failed.' }));
+    }, 1000);
   };
 
   render() {
     const { images, status } = this.state;
 
-    if (status === 'pending') {
+    if (status === 'A network request has been initiated and is in progress...') {
       return <Loader />;
     }
 
-    if (status === 'resolve') {
+    if (status === 'The network request has completed successfully') {
       return (
         <>
           <ul className={styles.ImageGallery}>
@@ -69,9 +77,9 @@ export default class ImageGallery extends Component {
             ))}
           </ul>
           {this.state.images.length !== 0 ? (
-            <Button onClick={this.props.loadMoreBtn} />
+            <Button onClick={this.props.loadMore} />
           ) : (
-            alert('No results')
+            alert('No images to be found')
           )}
         </>
       );
@@ -83,3 +91,5 @@ ImageGallery.propTypes = {
   onClick: PropTypes.func.isRequired,
   inputValue: PropTypes.string.isRequired,
 };
+
+export default ImageGallery;

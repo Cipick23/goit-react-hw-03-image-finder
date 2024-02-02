@@ -1,42 +1,49 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
+import * as basicLightbox from 'basiclightbox';
+import 'basiclightbox/dist/basicLightbox.min.css';
 import styles from './Modal.module.css';
 
-export default class Modal extends Component {
-    state = {}
+class Modal extends Component {
+  componentDidMount() {
+    this.instance = basicLightbox.create(`
+      <div className="${styles.Modal}">
+          <img 
+              src='${this.props.url}'
+              width="900"
+              height="800"
+              alt="Large Image"
+          >
+      </div>
+    `);
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.clickEsc);
-    }
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.clickEsc);
-    }
+    this.instance.show();
 
-    clickBackdrop = event => {
-        if (event.target === event.currentTarget) {
-            this.props.onClose();
-        }
-    }
+    window.addEventListener('keydown', this.handleKeyPress);
+    this.instance.element().addEventListener('click', this.handleClickOutside);
+  }
 
-    clickEsc = event => {
-        if (event.code === 'Escape') {
-            this.props.onClose();
-        }
-    }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyPress);
+    this.instance.element().removeEventListener('click', this.handleClickOutside);
+  }
 
-
-    render() {
-        return (
-            <div className={styles.overlay} onClick={this.clickBackdrop}>
-                <div className={styles.modal}>
-                    <img src={this.props.url} alt="" />
-                </div>
-            </div>
-        )
+  handleKeyPress = e => {
+    if (e.key === 'Escape') {
+      this.instance.close();
+      this.props.onClose();
     }
+  };
+
+  handleClickOutside = e => {
+    if (e.target === e.currentTarget) {
+      this.instance.close();
+      this.props.onClose();
+    }
+  };
+
+  render() {
+    return null;
+  }
 }
 
-Modal.propTypes = {
-    url: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired,
-};
+export default Modal;
