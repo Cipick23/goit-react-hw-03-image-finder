@@ -2,13 +2,12 @@ import 'index.css';
 import React, { Component } from 'react';
 import Searchbar from './searchbar/Searchbar';
 import ImageGallery from './imageGallery/ImageGallery';
-// import ImageGalleryItem from './imageGalleryItem/ImageGalleryItem';
 import Button from './button/Button';
 import axios from 'axios';
 import Loader from './loader/Loader';
+import articles from '../services/api';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
-const API_KEY = '40925294-1286bb755e1bdf5717fd8e824';
 
 class App extends Component {
   constructor(props) {
@@ -27,21 +26,26 @@ class App extends Component {
   }
 
   async retrieveArticles(query = 'react', page = 1) {
-    console.log(`Retrieving articles for page ${page}`);
-
-    this.setState({ isLoading: true, query });
-
+    console.log(`Retrieving articles for page ${page}`); 
+  
+    // Dacă ești la prima pagină, setează page la 2
+    if (page === 1) {
+      page = 2;
+    }
+  
+    this.setState({ isLoading: true, query, page });
+  
     try {
-      const response = await axios.get(
-        `/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-      );
+      const response = await articles(query, page);
       console.log('A fost returnată corect următoarea pagină de rezultate');
-
-      const newArticles = response.data.hits;
-
-      // Verifică dacă numărul de imagini returnate de API este mai mic decât numărul pe care îl aștepți
+  
+      const newArticles =
+        page === 2
+          ? response.data.hits
+          : [...this.state.articles, ...response.data.hits];
+  
       const showButton = newArticles.length === 12;
-
+  
       this.setState(prevState => ({
         articles: newArticles,
         page,
@@ -56,9 +60,10 @@ class App extends Component {
       }, 1000);
     }
   }
+  
 
   loadMore = () => {
-    console.log('Butonul Load more a fost apăsat'); // Adaugă acest rând
+    console.log('Butonul Load more a fost apăsat');
     this.setState(
       prevState => ({ page: prevState.page + 1 }),
       () => {
