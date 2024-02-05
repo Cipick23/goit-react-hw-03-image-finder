@@ -1,6 +1,6 @@
-export default async function articles( value, page = 1 ) {
+export default async function articles(value, page = 1) {
   const baseURL = 'https://pixabay.com/api/';
-  const API_KEY = '40925294-1286bb755e1bdf5717fd8e824';
+  const API_KEY = '40921400-16e67c90d6d4404c43b5f3edb';
 
   return await fetch(
     `${baseURL}?q=${value}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
